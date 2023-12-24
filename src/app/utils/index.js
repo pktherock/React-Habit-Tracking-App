@@ -4,6 +4,7 @@ import getLongestStreak from "./getLongestStreak";
 import getContinuousCount from "./getContinuousCount";
 import getHabitStatus from "./getHabitStatus";
 import getCount from "./getCount";
+import getFormattedTime from "./getFormattedTime";
 
 export {
   getFormattedHabit,
@@ -12,4 +13,5 @@ export {
   getContinuousCount,
   getHabitStatus,
   getCount,
+  getFormattedTime
 };

@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+
 import { useDispatch } from "react-redux";
 
 import { NavLink } from "react-router-dom";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
 import { alertService } from "../../../services";
-import { addHabit } from "../slices/HabitSlice";
+import { addHabit, updateHabit } from "../slices/HabitSlice";
 
-function AddTask() {
+function AddTask({ taskInfo, setTaskInfo }) {
   const [isOpen, setIsOpen] = useState(false);
   const [text, setText] = useState("");
   const [description, setDescription] = useState("");
@@ -21,31 +23,38 @@ function AddTask() {
       return alertService.error("All fields are required!");
     }
 
-    const taskInfo = {
+    const newTask = {
       text,
       description,
-      time: getFormattedTime(),
+      time,
     };
     // console.log(taskInfo);
 
-    dispatch(addHabit(taskInfo));
+    if (taskInfo) {
+      dispatch(updateHabit({ ...taskInfo, ...newTask }));
+      setTaskInfo(null);
+    } else {
+      dispatch(addHabit(newTask));
+    }
+
     setIsOpen(false);
     setText("");
     setDescription("");
     setTime("");
-    alertService.success("Task added successfully!");
+    alertService.success(
+      `Task ${taskInfo ? "Updated" : "added"} successfully!`
+    );
   };
 
-  function getFormattedTime() {
-    let result = `${time} AM`;
-
-    const timeArr = time.split(":");
-    if (Number(timeArr[0]) > 12) {
-      result = `${Number(timeArr[0]) - 12}:${timeArr[1]} PM`;
+  useEffect(() => {
+    if (taskInfo) {
+      const { text, description, time } = taskInfo;
+      setText(text);
+      setDescription(description);
+      setTime(time);
+      setIsOpen(true);
     }
-
-    return result;
-  }
+  }, [taskInfo]);
 
   return (
     <div className="flex justify-between p-3 items-center my-2 shadow border rounded font-semibold">
@@ -81,14 +90,16 @@ function AddTask() {
 
       {isOpen && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded shadow-lg w-96">
+          <div className="bg-white p-6 rounded shadow-lg w-2/4">
             <span
               className="float-right text-2xl cursor-pointer"
               onClick={() => setIsOpen(!isOpen)}
             >
               <XMarkIcon className="w-8 h-8" />
             </span>
-            <h2 className="text-xl font-bold mb-4">Dialog Title</h2>
+            <h2 className="text-xl font-bold mb-4">
+              {taskInfo ? "Updating Task" : "Creating Task"}
+            </h2>
             <form
               onSubmit={handleSubmit}
               className="w-full flex flex-col gap-4"
@@ -105,7 +116,7 @@ function AddTask() {
                 type="text"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Please enter task name"
+                placeholder="Please enter little more about task"
                 className="border rounded px-2 py-1 focus:outline-none focus:ring focus:border-blue-500"
                 required
               />
@@ -121,7 +132,7 @@ function AddTask() {
                 type="submit"
                 className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-300"
               >
-                Submit
+                {taskInfo ? "Update" : "Submit"}
               </button>
             </form>
           </div>
@@ -130,5 +141,10 @@ function AddTask() {
     </div>
   );
 }
+
+AddTask.propTypes = {
+  taskInfo: PropTypes.any,
+  setTaskInfo: PropTypes.func.isRequired,
+};
 
 export default AddTask;

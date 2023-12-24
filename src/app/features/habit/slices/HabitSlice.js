@@ -11,7 +11,7 @@ const demoHabit = {
   id: nanoid(),
   text: "Hello",
   description: "hello world at 3pm",
-  time: "3:30 PM",
+  time: "03:30",
   createdAt: "2023-12-15T02:27:59.159Z", // new Date().toISOString()
   count: 0,
   habitDetails: {},
@@ -30,7 +30,7 @@ const habitSlice = createSlice({
   name: "habit",
   initialState,
   reducers: {
-    // adding habit into store
+    // add habit into store
     addHabit: (state, action) => {
       const { text, description, time } = action.payload;
       const habit = {
@@ -48,8 +48,18 @@ const habitSlice = createSlice({
       localStorage.setItem("habits", JSON.stringify(state.habits));
     },
 
-    // updating habit into store
+    // Update habit and update store
     updateHabit: (state, action) => {
+      state.habits = state.habits.map((habit) =>
+        habit.id === action.payload.id ? { ...action.payload } : habit
+      );
+
+      // set habit into local storage
+      localStorage.setItem("habits", JSON.stringify(state.habits));
+    },
+
+    // toggle habit and update into store
+    toggleHabit: (state, action) => {
       state.habits = state.habits.map((habit) => {
         const { id, searchDate } = action.payload;
         // console.log(action.payload);
@@ -84,6 +94,7 @@ const habitSlice = createSlice({
   },
 });
 
-export const { addHabit, updateHabit, removeHabit } = habitSlice.actions;
+export const { addHabit, toggleHabit, updateHabit, removeHabit } =
+  habitSlice.actions;
 
 export default habitSlice.reducer;

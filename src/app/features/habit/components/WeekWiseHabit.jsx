@@ -1,16 +1,21 @@
 import { useDispatch, useSelector } from "react-redux";
-import { removeHabit, updateHabit } from "../slices/HabitSlice";
+import { removeHabit, toggleHabit } from "../slices/HabitSlice";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 
 import { Card, Container } from "../../../components";
 
 import AddTask from "./AddTask";
 import DaysName from "./DaysName";
-import { getHabitStatus } from "../../../utils";
+import { getFormattedTime, getHabitStatus } from "../../../utils";
 import { getCount } from "../../../utils";
+import { useState } from "react";
+import { alertService } from "../../../services";
 
 function WeekWiseHabit() {
   const habits = useSelector((state) => state.habits);
+
+  // for updating habit details
+  const [habit, setHabit] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -33,11 +38,21 @@ function WeekWiseHabit() {
     return result;
   };
 
+  const handleEditHabit = (id) => {
+    const habit = habits.find((habit) => habit.id === id);
+    setHabit(habit);
+  };
+
   return (
     <Container>
-      <AddTask />
+      <AddTask taskInfo={habit} setTaskInfo={setHabit} />
       <DaysName />
       <Card>
+        {habits.length === 0 && (
+          <h1 className="text-3xl font-semibold text-center">
+            No Habits found!
+          </h1>
+        )}
         {habits.map(
           ({ id, text, description, createdAt, time, count, habitDetails }) => (
             <div key={id} className="relative mt-1 border-b-2">
@@ -47,7 +62,7 @@ function WeekWiseHabit() {
                 </span>
                 <span>Created At: {new Date(createdAt).toLocaleString()}</span>
                 <div className="space-x-2">
-                  <span>Task Time: {time}</span>
+                  <span>Task Time: {getFormattedTime(time)}</span>
                   <span className="text-lime-500">
                     {getCount(count, createdAt)}
                   </span>
@@ -64,12 +79,15 @@ function WeekWiseHabit() {
                     <div className="flex justify-center items-center w-1/6">
                       <input
                         type="checkbox"
-                        className="rounded border-gray-300 border checked:bg-blue-500 checked:border-transparent focus:outline-none  w-8 h-8"
+                        className="rounded border-gray-300 border checked:bg-blue-500 checked:border-transparent focus:outline-none  w-8 h-8 cursor-pointer"
                         disabled={canEnable(createdAt, date)}
                         defaultChecked={getHabitStatus(habitDetails, date)}
-                        onChange={() =>
-                          dispatch(updateHabit({ id, searchDate: date }))
-                        }
+                        onChange={() => {
+                          dispatch(toggleHabit({ id, searchDate: date }));
+                          alertService.success(
+                            `${date} Task Status updated successfully!`
+                          );
+                        }}
                       />
                     </div>
                   </div>
@@ -79,11 +97,17 @@ function WeekWiseHabit() {
               {/* Edit & Delete Buttons */}
               <div className="absolute top-[-3px] right-[-6px]">
                 <button className="text-green-500 hover:text-gray-700 mr-2">
-                  <PencilIcon className="h-5 w-5" />
+                  <PencilIcon
+                    onClick={() => handleEditHabit(id)}
+                    className="h-5 w-5"
+                  />
                 </button>
                 <button className="text-red-500 hover:text-red-700">
                   <TrashIcon
-                    onClick={() => dispatch(removeHabit(id))}
+                    onClick={() => {
+                      dispatch(removeHabit(id));
+                      alertService.success("Task deleted successfully!");
+                    }}
                     className="h-5 w-5"
                   />
                 </button>
