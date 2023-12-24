@@ -1,8 +1,15 @@
+import { Card, Container } from "../../../components";
+import AddTask from "./AddTask";
+import DaysName from "./DaysName";
 
 function WeekWiseHabit() {
   return (
-    <div>WeekWiseHabit</div>
-  )
+    <Container>
+      <AddTask />
+      <DaysName />
+      <Card></Card>
+    </Container>
+  );
 }
 
-export default WeekWiseHabit
+export default WeekWiseHabit;
