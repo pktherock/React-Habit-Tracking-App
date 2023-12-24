@@ -11,7 +11,8 @@ const demoHabit = {
   text: "Hello",
   description: "hello world at 3pm",
   time: "3:30 PM",
-  createdAt: new Date().toISOString(),
+  createdAt:  "2023-12-15T02:27:59.159Z", // new Date().toISOString() 
+  habitDetails: { "2023-12-20": "DONE", "2023-12-15": "DONE" }
 };
 
 // Redux store initial state
@@ -19,7 +20,7 @@ const initialState = {
   habits:
     habitsFromStorage.length > 0
       ? getFormattedHabit(habitsFromStorage)
-      : [demoHabit],
+      : getFormattedHabit([demoHabit]),
 };
 
 // Habit slice
