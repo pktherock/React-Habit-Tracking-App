@@ -1,14 +1,33 @@
 import { Link } from "react-router-dom";
 import { Bars3Icon, XMarkIcon, HashtagIcon } from "@heroicons/react/24/solid";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Header() {
+  const [time, setTime] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  useEffect(() => {
+    const timerId = setInterval(() => {
+      const date = new Date();
+      let hour = date.getHours();
+      let minutes = date.getMinutes();
+      const cycle = hour > 12 ? "PM" : "AM";
+
+      hour = hour > 12 ? hour - 12 : hour;
+      hour = hour < 10 ? `0${hour}` : hour;
+      minutes = minutes < 10 ? `0${minutes}` : minutes;
+
+      const formattedTime = `${hour}:${minutes} ${cycle}`;
+      setTime(formattedTime);
+    }, 1000);
+
+    return () => clearInterval(timerId);
+  }, []);
 
   return (
     <div className="w-full bg-white sticky top-0 shadow-lg">
@@ -21,6 +40,7 @@ function Header() {
           </span>
           <span className="font-bold">React Habit Tracker app</span>
         </div>
+        <span className="text-xl font-semibold text-yellow-800">{time}</span>
         <div className="space-x-4 items-center hidden lg:inline-flex">
           Coding ninjas Skill Test 2
         </div>

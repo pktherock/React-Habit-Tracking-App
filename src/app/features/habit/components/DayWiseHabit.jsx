@@ -2,13 +2,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { Card, Container } from "../../../components";
 import AddTask from "./AddTask";
 
-import { updateHabit } from "../slices/HabitSlice";
+import { removeHabit, updateHabit } from "../slices/HabitSlice";
 import {
   getContinuousCount,
   getHabitStatus,
   getLongestStreak,
+  getCount,
 } from "../../../utils";
-import getCount from "../../../utils/getCount";
+
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 
 function DayWiseHabit() {
   const habits = useSelector((state) => state.habits);
@@ -28,17 +30,9 @@ function DayWiseHabit() {
     <Container>
       <AddTask />
       {habits.map(
-        ({
-          id,
-          count,
-          description,
-          habitDetails,
-          time,
-          text,
-          createdAt,
-        }) => (
+        ({ id, count, description, habitDetails, time, text, createdAt }) => (
           <Card key={id}>
-            <div className="flex items-center w-full py-2 px-4">
+            <div className="flex items-center w-full py-2 px-4 relative">
               <div className="flex justify-center items-center w-1/6">
                 <input
                   type="checkbox"
@@ -49,8 +43,8 @@ function DayWiseHabit() {
               </div>
 
               <div className="w-5/6">
-                <div className="flex justify-between items-center">
-                  <span>
+                <div className="flex justify-between items-center font-semibold">
+                  <span className="text-lime-500">
                     {text} - {description}
                   </span>
                   <span>
@@ -64,6 +58,19 @@ function DayWiseHabit() {
                   <span>{getLongestStreak(habitDetails)}</span>
                   <span>{getCount(count, createdAt)}</span>
                   <span>Daily</span>
+                </div>
+
+                {/* Edit & Delete Buttons */}
+                <div className="absolute top-[-6px] right-0">
+                  <button className="text-green-500 hover:text-gray-700 mr-2">
+                    <PencilIcon className="h-5 w-5" />
+                  </button>
+                  <button className="text-red-500 hover:text-red-700">
+                    <TrashIcon
+                      onClick={() => dispatch(removeHabit(id))}
+                      className="h-5 w-5"
+                    />
+                  </button>
                 </div>
               </div>
             </div>

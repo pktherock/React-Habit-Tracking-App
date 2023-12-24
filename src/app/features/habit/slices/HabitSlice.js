@@ -64,9 +64,13 @@ const habitSlice = createSlice({
 
     // deleting habit from store
     removeHabit: (state, action) => {
+      if (!confirm("Are you sure? you want to delete.")) return state;
       state.habits = state.habits.filter(
         (habit) => habit.id !== action.payload
       );
+
+      // set habit into local storage
+      localStorage.setItem("habits", JSON.stringify(state.habits));
     },
   },
 });
