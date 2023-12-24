@@ -13,15 +13,8 @@ const demoHabit = {
   description: "hello world at 3pm",
   time: "3:30 PM",
   createdAt: "2023-12-15T02:27:59.159Z", // new Date().toISOString()
-  count: 5,
-  habitDetails: {
-    "2023-12-24": "NOT_DONE",
-    "2023-12-23": "DONE",
-    "2023-12-21": "DONE",
-    "2023-12-20": "DONE",
-    "2023-12-19": "DONE",
-    "2023-12-15": "DONE",
-  },
+  count: 0,
+  habitDetails: {},
 };
 
 // Redux store initial state
@@ -37,6 +30,7 @@ const habitSlice = createSlice({
   name: "habit",
   initialState,
   reducers: {
+    // adding habit into store
     addHabit: (state, action) => {
       const habit = {
         id: nanoid(),
@@ -45,9 +39,11 @@ const habitSlice = createSlice({
       state.habits.unshift(habit);
     },
 
+    // updating habit into store
     updateHabit: (state, action) => {
       state.habits = state.habits.map((habit) => {
         const { id, searchDate } = action.payload;
+        // console.log(action.payload);
         if (habit.id === id) {
           const status = habit.habitDetails[searchDate];
           if (status === HABIT_STATUS.DONE) {
@@ -66,6 +62,7 @@ const habitSlice = createSlice({
       localStorage.setItem("habits", JSON.stringify(state.habits));
     },
 
+    // deleting habit from store
     removeHabit: (state, action) => {
       state.habits = state.habits.filter(
         (habit) => habit.id !== action.payload

@@ -10,7 +10,7 @@ const getFormattedHabit = (allHabits = []) => {
   // format Habits
   const formattedHabits = formatHabit(sortedHabits);
 
-  console.log("Formatted habit", formattedHabits);
+  // console.log("Formatted habit", formattedHabits);
 
   return formattedHabits;
 };

@@ -1,10 +1,10 @@
 import { HABIT_STATUS } from "../constants";
 
-function getHabitStatus(habitDetails = {}) {
-  const date = new Date();
-  const searchDate = `${date.getFullYear()}-${
-    date.getMonth() + 1
-  }-${date.getDate()}`;
+function getHabitStatus(habitDetails = {}, date = "") {
+  const currentDate = date ? new Date(date) : new Date();
+  const searchDate = `${currentDate.getFullYear()}-${
+    currentDate.getMonth() + 1
+  }-${currentDate.getDate()}`;
 
   return habitDetails[searchDate] === HABIT_STATUS.DONE;
 }
