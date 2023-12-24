@@ -29,10 +29,13 @@ function DayWiseHabit() {
   return (
     <Container>
       <AddTask />
-      {habits.map(
-        ({ id, count, description, habitDetails, time, text, createdAt }) => (
-          <Card key={id}>
-            <div className="flex items-center w-full py-2 px-4 relative">
+      <Card>
+        {habits.map(
+          ({ id, count, description, habitDetails, time, text, createdAt }) => (
+            <div
+              key={id}
+              className="flex items-center mt-2 w-full py-2 px-4 relative border-b-2"
+            >
               <div className="flex justify-center items-center w-1/6">
                 <input
                   type="checkbox"
@@ -74,9 +77,9 @@ function DayWiseHabit() {
                 </div>
               </div>
             </div>
-          </Card>
-        )
-      )}
+          )
+        )}
+      </Card>
     </Container>
   );
 }

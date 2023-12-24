@@ -32,11 +32,20 @@ const habitSlice = createSlice({
   reducers: {
     // adding habit into store
     addHabit: (state, action) => {
+      const { text, description, time } = action.payload;
       const habit = {
         id: nanoid(),
-        text: action.payload, // todo
+        text,
+        description,
+        time,
+        createdAt: new Date().toISOString(),
+        count: 0,
+        habitDetails: {},
       };
       state.habits.unshift(habit);
+
+      // set habit into local storage
+      localStorage.setItem("habits", JSON.stringify(state.habits));
     },
 
     // updating habit into store

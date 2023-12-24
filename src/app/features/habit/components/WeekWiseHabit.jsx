@@ -40,7 +40,7 @@ function WeekWiseHabit() {
       <Card>
         {habits.map(
           ({ id, text, description, createdAt, time, count, habitDetails }) => (
-            <div key={id} className="relative">
+            <div key={id} className="relative mt-1 border-b-2">
               <div className="flex justify-between px-10 py-2 bg-gray-100 rounded font-semibold">
                 <span className="text-lime-500">
                   {text} - {description}
@@ -65,6 +65,7 @@ function WeekWiseHabit() {
                       <input
                         type="checkbox"
                         className="rounded border-gray-300 border checked:bg-blue-500 checked:border-transparent focus:outline-none  w-8 h-8"
+                        disabled={canEnable(createdAt, date)}
                         defaultChecked={getHabitStatus(habitDetails, date)}
                         onChange={() =>
                           dispatch(updateHabit({ id, searchDate: date }))
@@ -76,7 +77,7 @@ function WeekWiseHabit() {
               </div>
 
               {/* Edit & Delete Buttons */}
-              <div className="absolute top-[-6px] right-[-5px]">
+              <div className="absolute top-[-3px] right-[-6px]">
                 <button className="text-green-500 hover:text-gray-700 mr-2">
                   <PencilIcon className="h-5 w-5" />
                 </button>
@@ -93,6 +94,21 @@ function WeekWiseHabit() {
       </Card>
     </Container>
   );
+}
+
+function canEnable(createdAt, date) {
+  const taskCreatedDate = new Date(createdAt).toISOString();
+  let currentCheckingDate = new Date(date);
+
+  currentCheckingDate.setHours(23, 59, 59, 999);
+  currentCheckingDate = currentCheckingDate.toISOString();
+
+  // true means checkbox will be disabled
+  if (currentCheckingDate < taskCreatedDate) {
+    return true;
+  }
+
+  return false;
 }
 
 export default WeekWiseHabit;
