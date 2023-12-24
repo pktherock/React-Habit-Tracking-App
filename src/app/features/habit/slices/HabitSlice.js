@@ -83,7 +83,6 @@ const habitSlice = createSlice({
 
     // deleting habit from store
     removeHabit: (state, action) => {
-      if (!confirm("Are you sure? you want to delete.")) return state;
       state.habits = state.habits.filter(
         (habit) => habit.id !== action.payload
       );

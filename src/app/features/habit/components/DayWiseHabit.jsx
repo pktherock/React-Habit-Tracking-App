@@ -38,6 +38,13 @@ function DayWiseHabit() {
     setHabit(habit);
   };
 
+  const handleDeleteBtnClick = (id) => {
+    const isConfirm = confirm("Are you sure? you want to delete.");
+    if (!isConfirm) return;
+    dispatch(removeHabit(id));
+    alertService.success("Task deleted successfully!");
+  };
+
   return (
     <Container>
       <AddTask taskInfo={habit} setTaskInfo={setHabit} />
@@ -90,10 +97,7 @@ function DayWiseHabit() {
                   </button>
                   <button className="text-red-500 hover:text-red-700">
                     <TrashIcon
-                      onClick={() => {
-                        dispatch(removeHabit(id));
-                        alertService.success("Task deleted successfully!");
-                      }}
+                      onClick={() => handleDeleteBtnClick(id)}
                       className="h-5 w-5"
                     />
                   </button>
